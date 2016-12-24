@@ -22,7 +22,7 @@ class Map:
 			self.mapDuo.append(self.map[i*self.size:(i+1)*self.size])
 			
 		self.out()
-		self.index(input('Введите число '))
+		self.index(inputNum(0, self.size**2 - 1, 'Введите число '))
 	
 	def search(self, numb):
 		#Ищет координаты числа numb
@@ -61,10 +61,8 @@ class Map:
 				self.out()
 		else:
 			print('Данное число нельзя сдвинуть')
-		self.index(input('Введите число '))
-		
 
-		self.index(input('Введите число '))
+		self.index(inputNum(0, self.size**2 - 1, 'Введите число '))
 
 	def out(self):
 		#Вывод на экран
@@ -73,18 +71,33 @@ class Map:
 		for i in range(0, self.size):
 			print(self.mapDuo[i])
 			self.map += self.mapDuo[i]
+		self.winner()
+
+	def winner(self):
+		for i in range(0, self.size - 1):
+			if self.map[i] != i + 1:
+				return 0
+		print("Победа!")
 
 
 
 def start():
-	size = input('Введите размерность поля (от 3 до 10)\n')
-	size = int(size)
-	if size < 3 or size > 10:
-		print('Введите число в диапазоне от 3 до 10!\n')
-		return start()
-	else:
-		#Создание объекта
-		map = Map(size)
+	size = inputNum(3, 10, 'Введите размерность поля (от 3 до 10)\n')
+	map = Map(int(size))
 
+def inputNum(a, b, text):
+	#Ввод чисел с проверкой
+	numb = input(text)
+	try:
+		numb = int(numb)
+		if numb < a or numb > b:
+			print('Введите другое число')
+			return inputNum(a, b, text)
+		else:
+			return str(numb)
+	except ValueError:
+		print('Вы ввели не число')
+		return inputNum(a, b, text)
+	
 start()
 input()
