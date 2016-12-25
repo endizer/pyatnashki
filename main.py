@@ -24,31 +24,10 @@ class Map:
 		self.zero = self.search('00')	
 		
 
-		
-	
 	def search(self, numb):
 		#Ищет координаты числа numb
 		return int(self.map.index(numb)/self.size), self.map.index(numb)%self.size
 		
-
-
-def start():
-	size = inputNum(3, 8, 'Введите размерность поля (от 3 до 8)\n')
-	map = Map(int(size))
-
-def inputNum(a, b, text):
-	#Ввод чисел с проверкой
-	numb = input(text)
-	try:
-		numb = int(numb)
-		if numb < a or numb > b:
-			print('Введите другое число')
-			return inputNum(a, b, text)
-		else:
-			return str(numb)
-	except ValueError:
-		print('Вы ввели не число')
-		return inputNum(a, b, text)
 
 def swap(x, y):
 	global zeroX
