@@ -1,12 +1,13 @@
 import random
+from tkinter import *
+
+
 class Map:
 	"""docstring for Map"""
 	def __init__(self, size = 4):
 		#Инициализация переменных
 		super(Map, self).__init__()
 		self.size = size
-		self.time = 0
-		self.moveCount = 0
 		self.map = []
 		#Инициализация поля
 		for i in range(0, self.size**2):
@@ -20,69 +21,19 @@ class Map:
 		self.mapDuo = []
 		for i in range(0, self.size):
 			self.mapDuo.append(self.map[i*self.size:(i+1)*self.size])
-			
-		self.out()
-		self.index(inputNum(0, self.size**2 - 1, 'Введите число '))
+		self.zero = self.search('00')	
+		
+
+		
 	
 	def search(self, numb):
 		#Ищет координаты числа numb
-		return self.map.index(numb)%self.size, int(self.map.index(numb)/self.size)
+		return int(self.map.index(numb)/self.size), self.map.index(numb)%self.size
 		
-
-	def index(self, numb):
-		if len(numb) == 1:
-			numb = '0'+numb
-		return self.move(self.search(numb))
-		
-
-	def move(self, coord):
-		#Сдвиг ячейки/цифры
-		print (coord)
-		zero = self.search('00')
-		if (zero[0] == coord[0] or zero[1] == coord[1]) and zero != coord:
-			if zero[1] == coord[1]:
-				#Сдвиг по x (строка)
-				del self.mapDuo[zero[1]][zero[0]]
-				self.mapDuo[coord[1]].insert(coord[0], '00')
-				self.out()
-			else:
-				#Сдвиг по y (столбец)
-				y = zero[1]
-				slide = 0
-				if y < coord[1]:
-					slide = 1
-				else:
-					slide = -1
-				while y != coord[1]:
-					self.mapDuo[y][coord[0]] = self.mapDuo[y + slide][coord[0]]
-					y += slide
-				else:
-					self.mapDuo[coord[1]][coord[0]] = '00'
-				self.out()
-		else:
-			print('Данное число нельзя сдвинуть')
-
-		self.index(inputNum(0, self.size**2 - 1, 'Введите число '))
-
-	def out(self):
-		#Вывод на экран
-		print('\n\n\n')
-		self.map = []
-		for i in range(0, self.size):
-			print(self.mapDuo[i])
-			self.map += self.mapDuo[i]
-		self.winner()
-
-	def winner(self):
-		for i in range(0, self.size - 1):
-			if self.map[i] != i + 1:
-				return 0
-		print("Победа!")
-
 
 
 def start():
-	size = inputNum(3, 10, 'Введите размерность поля (от 3 до 10)\n')
+	size = inputNum(3, 8, 'Введите размерность поля (от 3 до 8)\n')
 	map = Map(int(size))
 
 def inputNum(a, b, text):
@@ -98,6 +49,61 @@ def inputNum(a, b, text):
 	except ValueError:
 		print('Вы ввели не число')
 		return inputNum(a, b, text)
-	
-start()
-input()
+
+def swap(x, y):
+	global zeroX
+	global zeroY
+	if not((x < 0 or x >= map.size) or (y < 0 or y >= map.size)):
+		massButt[zeroY][zeroX]['text'] = massButt[y][x]['text']
+		massButt[y][x]['text'] = '00'
+		massButt[zeroY][zeroX].grid()
+		massButt[y][x].grid_remove()
+		zeroX = x
+		zeroY = y
+		
+
+
+def up(Event):
+	swap(zeroX, zeroY - 1)
+
+def down(Event):
+	swap(zeroX, zeroY + 1)
+
+def left(Event):
+	swap(zeroX - 1, zeroY)
+
+def right(Event):
+	swap(zeroX + 1, zeroY)
+
+
+map = Map(4)
+
+#Создание визуальной формы
+root = Tk()
+massButt = []
+#Выставление на визуальную форму кнопок
+for i in range(0, map.size):
+	massButt.append([])
+	for j in range(0, map.size):
+		massButt[i].append(Button(root, 
+			text = map.mapDuo[i][j], 
+			width=10, height=5))
+		massButt[i][j].grid(row = i, column = j)
+
+#Скрытие элемента "00"
+zeroX = map.zero[1]
+zeroY = map.zero[0]
+
+massButt[zeroY][zeroX].grid_remove()
+#Цвет поля
+root['background'] = 'grey'
+#Движение
+root.bind("<Up>", up)
+root.bind("<Down>", down)
+root.bind("<Left>", left)
+root.bind("<Right>", right)
+root.mainloop()
+
+
+
+exit()
